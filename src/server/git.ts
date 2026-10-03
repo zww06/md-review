@@ -32,7 +32,7 @@ async function git(cwd: string, args: string[], allowDifference = false): Promis
 }
 
 async function repositoryContext(workspaceRoot: string, filePath: string) {
-  const absolute = resolveInsideWorkspace(workspaceRoot, filePath);
+  const absolute = await resolveInsideWorkspace(workspaceRoot, filePath);
   const workspaceRepository = path.resolve((await git(workspaceRoot, ["rev-parse", "--show-toplevel"])).trim());
   const fileRepository = path.resolve((await git(path.dirname(absolute), ["rev-parse", "--show-toplevel"])).trim());
   if (workspaceRepository.toLocaleLowerCase() !== fileRepository.toLocaleLowerCase()) {
@@ -126,7 +126,7 @@ export async function reviewableHead(workspaceRoot: string, filePath: string, lo
   const context = await repositoryContext(workspaceRoot, filePath);
   const commitId = await head(context.repository);
   const [diskText, headText] = await Promise.all([
-    readFile(resolveInsideWorkspace(workspaceRoot, filePath), "utf8"),
+    resolveInsideWorkspace(workspaceRoot, filePath).then((absolute) => readFile(absolute, "utf8")),
     committedText(context.repository, commitId, context.relativePath),
   ]);
   const diskHash = createHash("sha256").update(diskText).digest("hex");

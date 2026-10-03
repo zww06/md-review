@@ -90,6 +90,8 @@ app.get<{ Querystring: { document?: string; path?: string } }>("/api/asset", asy
   try {
     const asset = await readLocalAsset(workspaceRoot, request.query.document, request.query.path);
     await access(asset);
+    reply.header("Content-Security-Policy", "sandbox; default-src 'none'");
+    reply.header("X-Content-Type-Options", "nosniff");
     return reply.sendFile(path.basename(asset), path.dirname(asset));
   } catch (error) {
     return reply.code(404).send({ error: error instanceof Error ? error.message : "Asset unavailable." });
