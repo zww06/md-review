@@ -7,4 +7,5 @@ planning/
 .codegraph/
 .tmp/
 logs/
-*.md
+AGENTS.md
+PRODUCT.md
