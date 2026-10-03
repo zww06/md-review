@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-server/
+.impeccable/review/
+*.log
+planning/
+.codegraph/
+.tmp/
+logs/
+*.md
